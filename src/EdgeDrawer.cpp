@@ -5,8 +5,7 @@
 namespace upm {
 
 template<class T>
-static inline std::vector<T> &
-operator+=(std::vector<T> &lhs, std::vector<T> l) {
+static inline std::vector<T> &operator+=(std::vector<T> &lhs, std::vector<T> l) {
   lhs.insert(std::end(lhs), std::begin(l), std::end(l));
   return lhs;
 }
@@ -19,14 +18,14 @@ EdgeDrawer::EdgeDrawer(const LineDetectionExtraInfoPtr &gradientInfo,
                        bool treatJunctions,
                        std::vector<int> listOfJunctionSizes,
                        double junctionEigenvalsTh,
-                       double junctionAngleTh) :
-    lineFitThreshold(lineFitThreshold),
-    pxToSegmentDistTh(pxToSegmentDistTh),
-    minLineLength(minLineLength),
-    treatJunctions(treatJunctions),
-    listOfJunctionSizes(std::move(listOfJunctionSizes)),
-    junctionEigenvalsTh(junctionEigenvalsTh),
-    junctionAngleTh(junctionAngleTh) {
+                       double junctionAngleTh)
+    : lineFitThreshold(lineFitThreshold),
+      pxToSegmentDistTh(pxToSegmentDistTh),
+      minLineLength(minLineLength),
+      treatJunctions(treatJunctions),
+      listOfJunctionSizes(std::move(listOfJunctionSizes)),
+      junctionEigenvalsTh(junctionEigenvalsTh),
+      junctionAngleTh(junctionAngleTh) {
   init(gradientInfo, edgeImage);
 }
 
@@ -63,9 +62,7 @@ void EdgeDrawer::init(const LineDetectionExtraInfoPtr &gradientInfo, cv::Mat &ed
   branchesStack.reserve(100);
 }
 
-inline void EdgeDrawer::addJunctionPixelsToSegment(const ImageEdge &junctionPixels,
-                                                   FullSegmentInfo &segment,
-                                                   bool addPixelsForTheFirstSide) {
+inline void EdgeDrawer::addJunctionPixelsToSegment(const ImageEdge &junctionPixels, FullSegmentInfo &segment, bool addPixelsForTheFirstSide) {
 
   if (addPixelsForTheFirstSide) segment.firstEndpointExtended = true;
   else segment.secondEndpointExtended = true;
@@ -156,9 +153,7 @@ void EdgeDrawer::drawEdgeTreeStack(Pixel anchor, ImageEdge &initialPixels, bool 
       }
 
       indexInArray = px.y * imageWidth + px.x;
-      inlierOverwritten = edgeImg[indexInArray] == UPM_ED_SEGMENT_INLIER_PX ||
-          edgeImg[indexInArray] == UPM_ED_JUNTION_PX ||
-          edgeImg[indexInArray] == UPM_ED_EDGE_PIXEL;
+      inlierOverwritten = edgeImg[indexInArray] == UPM_ED_SEGMENT_INLIER_PX || edgeImg[indexInArray] == UPM_ED_JUNTION_PX || edgeImg[indexInArray] == UPM_ED_EDGE_PIXEL;
 
       if (inlierOverwritten) {
         // LOGD << "\t\tStopping because the pixel " << px << " is an "
@@ -286,7 +281,7 @@ void EdgeDrawer::drawEdgeTreeStack(Pixel anchor, ImageEdge &initialPixels, bool 
         // If outliersList.size() > UPM_MAX_OUTLIERS_TH, we generate a THIRD BRANCH to draw without following a segment
         // This is not immediately processed, instead, it is added to the stack and processed
         // when the previous tasks have finished
-        for (const Pixel &outlier: outliersList) {
+        for (const Pixel &outlier : outliersList) {
           edgeImg[outlier.y * imageWidth + outlier.x] = UPM_ED_NO_EDGE_PIXEL;
         }
 
@@ -304,16 +299,13 @@ void EdgeDrawer::drawEdgeTreeStack(Pixel anchor, ImageEdge &initialPixels, bool 
         // branch.pixels should contain the last inlier px and the list of outliers
         branch.pixels.clear();
         branch.pixels.push_back(pixels.back());
-        for (Pixel &p: outliersList) branch.pixels.push_back(p);
+        for (Pixel &p : outliersList) branch.pixels.push_back(p);
       }
 
       // BRANCH 1
       wasExtended = localSegment->firstEndpointExtended;
       // If we can go on straight forward skipping some pixels do it
-      if ((outliersList.size() > UPM_MAX_OUTLIERS_TH || inlierOverwritten) &&
-          !wasExtended && treatJunctions && canSegmentBeExtended(*localSegment,
-                                                                 true,
-                                                                 extensionPixels)) {
+      if ((outliersList.size() > UPM_MAX_OUTLIERS_TH || inlierOverwritten) && !wasExtended && treatJunctions && canSegmentBeExtended(*localSegment, true, extensionPixels)) {
         // Generating FIRST BRANCH to continue straight forward
 
         // Get the line direction
@@ -364,9 +356,7 @@ void EdgeDrawer::drawEdgeTreeStack(Pixel anchor, ImageEdge &initialPixels, bool 
             // Create a new entry in the stack
             branchesStack.emplace_back(DrawingBranch{oppositeLineDirection, anchor, false, {}});
           }
-        } else if (!wasExtended && treatJunctions && canSegmentBeExtended(*localSegment,
-                                                                          false,
-                                                                          extensionPixels)) {
+        } else if (!wasExtended && treatJunctions && canSegmentBeExtended(*localSegment, false, extensionPixels)) {
 
           // BRANCH 2.b
           // Generating SECOND BRANCH (b) with extension pixels (JUNCTION)
@@ -440,10 +430,7 @@ void EdgeDrawer::drawEdgeInBothDirections(uint8_t direction, Pixel anchor) {
 /////////////////////////////////////////////////////////////////////////
 
 inline bool EdgeDrawer::findNextPxWithGradient(uint8_t pxGradDirection,  // dirImg[indexInArray]
-                                               const int16_t *gradImg,
-                                               int imageWidth, int imageHeight,
-                                               Pixel &px,
-                                               Pixel &lastPx) {
+                                               const int16_t *gradImg, int imageWidth, int imageHeight, Pixel &px, Pixel &lastPx) {
 
   int16_t gValue1, gValue2, gValue3;
   int lastX, lastY, indexInArray;
@@ -661,9 +648,7 @@ inline bool EdgeDrawer::findNextPxWithGradient(uint8_t pxGradDirection,  // dirI
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-bool EdgeDrawer::canSegmentBeExtended(FullSegmentInfo &segment,
-                                      bool extendByTheEnd,
-                                      ImageEdge &pixelsInTheExtension) {
+bool EdgeDrawer::canSegmentBeExtended(FullSegmentInfo &segment, bool extendByTheEnd, ImageEdge &pixelsInTheExtension) {
   bool inlier, found, horizontalValidationDir, fitsEigenvaluesCond, fitsAngleCond;
   int i, validateDx, validateDy, xOffset, yOffset, indexInArray;
   double theta;
@@ -673,7 +658,7 @@ bool EdgeDrawer::canSegmentBeExtended(FullSegmentInfo &segment,
   cv::Vec3d eq;
   firstPx = extendByTheEnd ? segment.getLastPixel() : segment.getFirstPixel();
 
-  for (int GRAD_JUNCTION_SIZE: listOfJunctionSizes) {
+  for (int GRAD_JUNCTION_SIZE : listOfJunctionSizes) {
 
     if (segment.getNumOfPixels() <= GRAD_JUNCTION_SIZE) break;
 
@@ -681,13 +666,7 @@ bool EdgeDrawer::canSegmentBeExtended(FullSegmentInfo &segment,
 
     px = firstPx;
     // calculate the pixel after the extension
-    found = findNextPxWithProjection(gradImg,
-                                     segment.getLineEquation(),
-                                     !extendByTheEnd,
-                                     imageWidth,
-                                     imageHeight,
-                                     GRAD_JUNCTION_SIZE,
-                                     px);
+    found = findNextPxWithProjection(gradImg, segment.getLineEquation(), !extendByTheEnd, imageWidth, imageHeight, GRAD_JUNCTION_SIZE, px);
     if (!found) {
       // LOGD << "Cannot follow pixel (" << px << "). Do not extending the segment.";
       continue;
@@ -699,11 +678,7 @@ bool EdgeDrawer::canSegmentBeExtended(FullSegmentInfo &segment,
 
     // Try to draw GRAD_JUNCTION_SIZE pixels if the segment direction
     for (i = 0; i < GRAD_JUNCTION_SIZE; i++) {
-      if (!findNextPxWithGradient(segment.horizontal() ? UPM_EDGE_HORIZONTAL : UPM_EDGE_VERTICAL,
-                                  gradImg,
-                                  imageWidth, imageHeight,
-                                  px,
-                                  lastPx)) {
+      if (!findNextPxWithGradient(segment.horizontal() ? UPM_EDGE_HORIZONTAL : UPM_EDGE_VERTICAL, gradImg, imageWidth, imageHeight, px, lastPx)) {
         // LOGD << "\t\t\tNo new pixels found following the edge: CANNOT EXTEND";
         pixelsInTheExtension.clear();
         break;
@@ -724,51 +699,50 @@ bool EdgeDrawer::canSegmentBeExtended(FullSegmentInfo &segment,
     // If we couldn't draw the GRAD_JUNCTION_SIZE pixels in the line direction
     if (pixelsInTheExtension.empty()) continue;
 
-      // Get the segment angle
-      eq = segment.getLineEquation();
-      // Get the angle perpendicular to the fitted line
-      theta = std::atan2(eq[0], eq[1]) + M_PI_2;
-      // Force theta to be in range [0, M_PI)
-      while (theta < 0) theta += M_PI;
-      while (theta >= M_PI) theta -= M_PI;
+    // Get the segment angle
+    eq = segment.getLineEquation();
+    // Get the angle perpendicular to the fitted line
+    theta = std::atan2(eq[0], eq[1]) + M_PI_2;
+    // Force theta to be in range [0, M_PI)
+    while (theta < 0) theta += M_PI;
+    while (theta >= M_PI) theta -= M_PI;
 
-      // Evaluation of the extension pixels based on the auto-correlation gradient matrix
-      // Elements of the matrix M = [[a, b], [b, d]]
-      a = 0, b = 0, d = 0;
-      validateDx = std::abs(pixelsToValidate.back().x - pixelsToValidate.front().x);
-      validateDy = std::abs(pixelsToValidate.back().y - pixelsToValidate.front().y);
-      horizontalValidationDir = validateDx >= validateDy;
-      for (Pixel &extPixel: pixelsToValidate) {
-        for (int offset: {-1, 0, 1}) {
-          // Depending on the segment extension pixels orientation, look the vertical or horizontal neighbors
-          xOffset = horizontalValidationDir ? 0 : offset;
-          yOffset = horizontalValidationDir ? offset : 0;
-          indexInArray = std::min(imageHeight-1, std::max(0, extPixel.y + yOffset)) * imageWidth
-              + std::min(imageWidth-1, std::max(0, extPixel.x + xOffset));
+    // Evaluation of the extension pixels based on the auto-correlation gradient matrix
+    // Elements of the matrix M = [[a, b], [b, d]]
+    a = 0, b = 0, d = 0;
+    validateDx = std::abs(pixelsToValidate.back().x - pixelsToValidate.front().x);
+    validateDy = std::abs(pixelsToValidate.back().y - pixelsToValidate.front().y);
+    horizontalValidationDir = validateDx >= validateDy;
+    for (Pixel &extPixel : pixelsToValidate) {
+      for (int offset : {-1, 0, 1}) {
+        // Depending on the segment extension pixels orientation, look the vertical or horizontal neighbors
+        xOffset = horizontalValidationDir ? 0 : offset;
+        yOffset = horizontalValidationDir ? offset : 0;
+        indexInArray = std::min(imageHeight - 1, std::max(0, extPixel.y + yOffset)) * imageWidth + std::min(imageWidth - 1, std::max(0, extPixel.x + xOffset));
 
-          a += pDxImg[indexInArray] * pDxImg[indexInArray];
-          b += pDxImg[indexInArray] * pDyImg[indexInArray];
-          d += pDyImg[indexInArray] * pDyImg[indexInArray];
-        }
+        a += pDxImg[indexInArray] * pDxImg[indexInArray];
+        b += pDxImg[indexInArray] * pDyImg[indexInArray];
+        d += pDyImg[indexInArray] * pDyImg[indexInArray];
       }
-      // Manually compute SVD of matrix M = [[a, b], [b, d]]
-      // https://lucidar.me/en/mathematics/singular-value-decomposition-of-a-2x2-matrix/
-      tmp = a * a - d * d;
-      s1 = a * a + 2 * b * b + d * d;
-      s2 = std::sqrt(tmp * tmp + 4 * b * b * (a + d) * (a + d));
-      eigen_angle = -0.5f * std::atan2(2 * a * b + 2 * b * d, tmp);
-      while (eigen_angle < 0) eigen_angle += M_PI;
-      while (eigen_angle >= M_PI) eigen_angle -= M_PI;
+    }
+    // Manually compute SVD of matrix M = [[a, b], [b, d]]
+    // https://lucidar.me/en/mathematics/singular-value-decomposition-of-a-2x2-matrix/
+    tmp = a * a - d * d;
+    s1 = a * a + 2 * b * b + d * d;
+    s2 = std::sqrt(tmp * tmp + 4 * b * b * (a + d) * (a + d));
+    eigen_angle = -0.5f * std::atan2(2 * a * b + 2 * b * d, tmp);
+    while (eigen_angle < 0) eigen_angle += M_PI;
+    while (eigen_angle >= M_PI) eigen_angle -= M_PI;
 
-      // This conditions requires the most important eigenvalue to be significantly bigger than the second one
-      fitsEigenvaluesCond = std::sqrt((s1 + s2) / (s1 - s2 + 0.00001)) > junctionEigenvalsTh;
-      // This condition requires that the first eigenvector has a similar angle to the segment.
-      fitsAngleCond = circularDist(theta, eigen_angle, M_PI) < junctionAngleTh;
-      // LOGD << "Fits eigenvalues: " << fitsEigenvaluesCond << ", fits angle: " << fitsAngleCond;
+    // This conditions requires the most important eigenvalue to be significantly bigger than the second one
+    fitsEigenvaluesCond = std::sqrt((s1 + s2) / (s1 - s2 + 0.00001)) > junctionEigenvalsTh;
+    // This condition requires that the first eigenvector has a similar angle to the segment.
+    fitsAngleCond = circularDist(theta, eigen_angle, M_PI) < junctionAngleTh;
+    // LOGD << "Fits eigenvalues: " << fitsEigenvaluesCond << ", fits angle: " << fitsAngleCond;
 
-      if (!fitsEigenvaluesCond || !fitsAngleCond) {
-        continue;
-      }
+    if (!fitsEigenvaluesCond || !fitsAngleCond) {
+      continue;
+    }
 
     // LOGD << "\t\t\tThe segment can be extended. Extension px's: " << pixelsInTheExtension;
     return true;
@@ -806,12 +780,8 @@ Segments EdgeDrawer::getDetectedSegments() const {
   return result;
 }
 
-bool EdgeDrawer::findNextPxWithProjection(const int16_t *gradImg,
-                                          cv::Vec3f eq,
-                                          bool invertLineDir,  // extendSecondEndpoint
-                                          int imageWidth, int imageHeight,
-                                          int stepSize,
-                                          Pixel &px) {
+bool EdgeDrawer::findNextPxWithProjection(const int16_t *gradImg, cv::Vec3f eq, bool invertLineDir,  // extendSecondEndpoint
+                                          int imageWidth, int imageHeight, int stepSize, Pixel &px) {
   assert(px.x >= 0 && px.x < imageWidth && px.y >= 0 && px.y < imageHeight);
 
   int16_t gValue1, gValue2, gValue3, gValue4;

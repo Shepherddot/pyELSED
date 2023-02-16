@@ -116,7 +116,7 @@ ImageEdge FullSegmentInfo::getPixels() const {
   ImageEdge result;
   result.reserve(getNumOfPixels());
   // Copy the elements to the destination vector
-  for (const Pixel &px: *this)
+  for (const Pixel &px : *this)
     result.push_back(px);
   return result;
 }

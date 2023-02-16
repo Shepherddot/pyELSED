@@ -80,15 +80,9 @@ class ELSED {
 
   void clear();
 
-  static void computeAnchorPoints(const cv::Mat &dirImage,
-                                  const cv::Mat &gradImageWO,
-                                  const cv::Mat &gradImage,
-                                  int scanInterval,
-                                  int anchorThresh,
-                                  std::vector<Pixel> &anchorPoints);  // NOLINT
+  static void computeAnchorPoints(const cv::Mat &dirImage, const cv::Mat &gradImageWO, const cv::Mat &gradImage, int scanInterval, int anchorThresh, std::vector<Pixel> &anchorPoints);  // NOLINT
 
-  static LineDetectionExtraInfoPtr
-  computeGradients(const cv::Mat &srcImg, short gradientTh);
+  static LineDetectionExtraInfoPtr computeGradients(const cv::Mat &srcImg, short gradientTh);
 
   ImageEdges getAllEdges() const;
 
@@ -97,9 +91,7 @@ class ELSED {
   const EdgeDrawerPtr &getDrawer() const { return drawer; }
 
  private:
-  void drawAnchorPoints(const uint8_t *dirImg,
-                        const std::vector<Pixel> &anchorPoints,
-                        uint8_t *pEdgeImg);  // NOLINT
+  void drawAnchorPoints(const uint8_t *dirImg, const std::vector<Pixel> &anchorPoints, uint8_t *pEdgeImg);  // NOLINT
 
   ELSEDParams params;
   LineDetectionExtraInfoPtr imgInfo;

@@ -1,3 +1,24 @@
+# INTRODUCTION
+This is a simple python binding for elsed algorithm, for research purpose. 
+
+only opencv and boost is needed.
+
+### HOW TO USE
+```angular2html
+git clone 
+cd ELSED
+mkdir build && cd build
+cmake ..
+make
+```
+
+### TEST
+```angular2html
+cd python
+python line.py
+```
+
+# ORIGINAL README
 ![Graffter Banner](images/banner.jpg)
 # ELSED: Enhanced Line SEgment Drawing
 

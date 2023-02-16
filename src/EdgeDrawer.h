@@ -43,9 +43,7 @@ class EdgeDrawer {
   const ImageEdge &getPixels() const { return pixels; }
 
  private:
-  inline void addJunctionPixelsToSegment(const ImageEdge &edgePixels,
-                                         FullSegmentInfo &segment,
-                                         bool addPixelsForTheFirstSide);
+  inline void addJunctionPixelsToSegment(const ImageEdge &edgePixels, FullSegmentInfo &segment, bool addPixelsForTheFirstSide);
 
   /**
    *
@@ -58,18 +56,11 @@ class EdgeDrawer {
    * @param px
    * @return
    */
-  inline static bool findNextPxWithProjection(const int16_t *gradImg,
-                                              cv::Vec3f eq,
-                                              bool invertLineDir,  // extendSecondEndpoint
-                                              int imageWidth, int imageHeight,
-                                              int stepSize,
-                                              Pixel &px);
+  inline static bool findNextPxWithProjection(const int16_t *gradImg, cv::Vec3f eq, bool invertLineDir,  // extendSecondEndpoint
+                                              int imageWidth, int imageHeight, int stepSize, Pixel &px);
 
   inline static bool findNextPxWithGradient(uint8_t pxGradDirection,  // dirImg[indexInArray]
-                                            const int16_t *gradImg,
-                                            int imageWidth, int imageHeight,
-                                            Pixel &px,
-                                            Pixel &lastPx);
+                                            const int16_t *gradImg, int imageWidth, int imageHeight, Pixel &px, Pixel &lastPx);
 
   /**
    * @brief Checks if a segment can be extended by a certain side.
@@ -87,9 +78,7 @@ class EdgeDrawer {
    * @param pixelsInTheExtension
    * @return
    */
-  bool canSegmentBeExtended(FullSegmentInfo &segment,
-                            bool extendByTheEnd,
-                            ImageEdge &pixelsInTheExtension);
+  bool canSegmentBeExtended(FullSegmentInfo &segment, bool extendByTheEnd, ImageEdge &pixelsInTheExtension);
 
   static inline uint8_t inverseDirection(uint8_t dir);
 

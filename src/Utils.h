@@ -108,8 +108,7 @@ typedef std::vector<SalientSegment> SalientSegments;
  * @param mod The number of elements in the circle (2 * PI to radians or 360 for degrees)
  * @return
  */
-inline double
-circularDist(double valueA, double valueB, double mod = 360) {
+inline double circularDist(double valueA, double valueB, double mod = 360) {
   double a, b; // a is the small number and b the great number
   if (valueA < valueB) {
     a = valueA;
@@ -131,8 +130,7 @@ circularDist(double valueA, double valueB, double mod = 360) {
  * @param p The point which we want to calculate its projection over the line
  * @return The point p' which is the projection of p over the line.
  */
-inline cv::Point2f
-getProjectionPtn(const cv::Vec3f &l, const cv::Point2f &p) {
+inline cv::Point2f getProjectionPtn(const cv::Vec3f &l, const cv::Point2f &p) {
   const cv::Vec3f homoP(p.x, p.y, 1);
   if (l.dot(homoP) == 0) {
     // If the point is over the line return this same point
@@ -153,8 +151,7 @@ getProjectionPtn(const cv::Vec3f &l, const cv::Point2f &p) {
  * @param s The input segment
  * @return The length of the segment
  */
-inline float
-segLength(const Segment &s) {
+inline float segLength(const Segment &s) {
   // The optimal way to do that, is to compute first the differences
   const float dx = s[0] - s[2];
   const float dy = s[1] - s[3];
@@ -168,14 +165,12 @@ segLength(const Segment &s) {
  * @return The angle that the segment forms with the X-axis in radians.
  * Range (pi/2, -pi/2].
  */
-inline float
-segAngle(const Segment &s) {
+inline float segAngle(const Segment &s) {
   if (s[2] > s[0])
     return std::atan2(s[3] - s[1], s[2] - s[0]);
   else
     return std::atan2(s[1] - s[3], s[0] - s[2]);
 }
-
 
 /**
  * Returns the line pixels using the Bresenham Algorithm:
